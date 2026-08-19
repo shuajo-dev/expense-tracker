@@ -19,7 +19,7 @@ class ExpenseController extends Controller
 
     public function index(): InertiaResponse
     {
-        return Inertia::render('Expenses/Index', [
+        return Inertia::render('expenses/index', [
             'expenses' => Expense::with('category')->orderByDesc('date')->orderByDesc('id')->get(),
             'categories' => Category::orderBy('name')->get(),
         ]);
