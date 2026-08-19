@@ -18,7 +18,9 @@ class CategoryFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => fake()->words(2, true),
+            'monthly_budget_cents' => fake()->numberBetween(10_000, 500_000),
+            'spent_cents' => 0,
         ];
     }
 }
