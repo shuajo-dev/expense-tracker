@@ -35,6 +35,8 @@ class CategoryController extends Controller
             return response($category, 201);
         }
 
+        Inertia::flash('toast', ['type' => 'success', 'message' => __('Category added.')]);
+
         return redirect()->route('categories.index');
     }
 
@@ -46,6 +48,8 @@ class CategoryController extends Controller
             return response($category);
         }
 
+        Inertia::flash('toast', ['type' => 'success', 'message' => __('Category updated.')]);
+
         return redirect()->route('categories.index');
     }
 
@@ -56,6 +60,8 @@ class CategoryController extends Controller
         if ($request->wantsJson()) {
             return response()->noContent();
         }
+
+        Inertia::flash('toast', ['type' => 'success', 'message' => __('Category deleted.')]);
 
         return redirect()->route('categories.index');
     }

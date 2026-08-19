@@ -36,6 +36,8 @@ class ExpenseController extends Controller
             return response($expense->fresh(), $created ? 201 : 200);
         }
 
+        Inertia::flash('toast', ['type' => 'success', 'message' => __('Expense added.')]);
+
         return redirect()->route('expenses.index');
     }
 
@@ -56,6 +58,8 @@ class ExpenseController extends Controller
             return response($expense);
         }
 
+        Inertia::flash('toast', ['type' => 'success', 'message' => __('Expense updated.')]);
+
         return redirect()->route('expenses.index');
     }
 
@@ -66,6 +70,8 @@ class ExpenseController extends Controller
         if ($request->wantsJson()) {
             return response()->noContent();
         }
+
+        Inertia::flash('toast', ['type' => 'success', 'message' => __('Expense deleted.')]);
 
         return redirect()->route('expenses.index');
     }
