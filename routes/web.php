@@ -9,7 +9,7 @@ Route::inertia('/', 'welcome')->name('home');
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');
 
-    Route::get('categories', [CategoryController::class, 'index'])->name('categories.index');
+    Route::resource('categories', CategoryController::class)->except(['create', 'edit', 'show']);
     Route::resource('expenses', ExpenseController::class)->except(['create', 'edit']);
 });
 
