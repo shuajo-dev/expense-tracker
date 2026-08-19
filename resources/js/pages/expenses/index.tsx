@@ -1,5 +1,6 @@
 import { Head, router } from '@inertiajs/react';
 import { useMemo, useState } from 'react';
+import ConfirmDialog from '@/components/confirm-dialog';
 import ExpenseForm from '@/components/expense-form';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -28,6 +29,9 @@ export default function ExpensesIndex({
 }: ExpensesIndexProps) {
     const [createOpen, setCreateOpen] = useState(false);
     const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
+    const [deletingExpense, setDeletingExpense] = useState<Expense | null>(
+        null,
+    );
 
     const stats = useMemo(() => {
         const totalSpent = categories.reduce(
@@ -47,12 +51,14 @@ export default function ExpensesIndex({
         };
     }, [expenses, categories]);
 
-    function handleDelete(expense: Expense) {
-        if (!confirm(`Delete "${expense.description}"?`)) {
+    function confirmDelete() {
+        if (!deletingExpense) {
             return;
         }
 
-        router.delete(destroy(expense.id).url, { preserveScroll: true });
+        router.delete(destroy(deletingExpense.id).url, {
+            preserveScroll: true,
+        });
     }
 
     return (
@@ -175,7 +181,9 @@ export default function ExpensesIndex({
                                                     variant="ghost"
                                                     size="sm"
                                                     onClick={() =>
-                                                        handleDelete(expense)
+                                                        setDeletingExpense(
+                                                            expense,
+                                                        )
                                                     }
                                                 >
                                                     Delete
@@ -217,6 +225,15 @@ export default function ExpensesIndex({
                     )}
                 </DialogContent>
             </Dialog>
+
+            <ConfirmDialog
+                open={deletingExpense !== null}
+                onOpenChange={(open) => !open && setDeletingExpense(null)}
+                title="Delete expense"
+                description={`Delete "${deletingExpense?.description}"? This cannot be undone.`}
+                confirmLabel="Delete"
+                onConfirm={confirmDelete}
+            />
         </>
     );
 }

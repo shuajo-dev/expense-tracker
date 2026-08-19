@@ -1,6 +1,8 @@
 import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
 import CategoryForm from '@/components/category-form';
+import ConfirmDialog from '@/components/confirm-dialog';
+import MessageDialog from '@/components/message-dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -25,17 +27,21 @@ export default function CategoriesIndex({ categories }: CategoriesIndexProps) {
     const [editingCategory, setEditingCategory] = useState<Category | null>(
         null,
     );
+    const [deletingCategory, setDeletingCategory] = useState<Category | null>(
+        null,
+    );
+    const [deleteError, setDeleteError] = useState<string | null>(null);
 
-    function handleDelete(category: Category) {
-        if (!confirm(`Delete "${category.name}"?`)) {
+    function confirmDelete() {
+        if (!deletingCategory) {
             return;
         }
 
-        router.delete(destroy(category.id).url, {
+        router.delete(destroy(deletingCategory.id).url, {
             preserveScroll: true,
             onError: (errors) => {
                 if (errors.category) {
-                    alert(errors.category);
+                    setDeleteError(errors.category);
                 }
             },
         });
@@ -120,7 +126,9 @@ export default function CategoriesIndex({ categories }: CategoriesIndexProps) {
                                                     variant="ghost"
                                                     size="sm"
                                                     onClick={() =>
-                                                        handleDelete(category)
+                                                        setDeletingCategory(
+                                                            category,
+                                                        )
                                                     }
                                                 >
                                                     Delete
@@ -161,6 +169,22 @@ export default function CategoriesIndex({ categories }: CategoriesIndexProps) {
                     )}
                 </DialogContent>
             </Dialog>
+
+            <ConfirmDialog
+                open={deletingCategory !== null}
+                onOpenChange={(open) => !open && setDeletingCategory(null)}
+                title="Delete category"
+                description={`Delete "${deletingCategory?.name}"? This cannot be undone.`}
+                confirmLabel="Delete"
+                onConfirm={confirmDelete}
+            />
+
+            <MessageDialog
+                open={deleteError !== null}
+                onOpenChange={(open) => !open && setDeleteError(null)}
+                title="Can't delete category"
+                description={deleteError ?? ''}
+            />
         </>
     );
 }
