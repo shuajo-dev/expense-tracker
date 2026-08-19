@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->unsignedInteger('monthly_budget_cents');
+            $table->unsignedInteger('spent_cents')->default(0);
             $table->timestamps();
         });
     }
